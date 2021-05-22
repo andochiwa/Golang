@@ -4,7 +4,13 @@ import "fmt"
 
 func main() {
 	fmt.Println("hello\nworld")
-	//sum, sub := getSumAndSub(1, 2)
+
+	num := 30
+	testPtr(&num)
+	fmt.Println(num)
+
+	sum, sub := getSumAndSub(10, 20)
+	fmt.Println(sum, sub)
 }
 
 // 多个返回值
