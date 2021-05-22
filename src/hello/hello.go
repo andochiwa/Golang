@@ -3,7 +3,7 @@ package main
 import "fmt"
 
 func main() {
-	fmt.Println("hello world")
+	fmt.Println("hello\nworld")
 	//sum, sub := getSumAndSub(1, 2)
 }
 
