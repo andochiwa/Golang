@@ -20,4 +20,10 @@ func main() {
 	// 第二种 使用strconv的函数
 	str = strconv.FormatInt(int64(n1), 10)
 	fmt.Println(str)
+
+	// string 转基本类型
+	str = "true"
+	// _表示忽略第二个返回值
+	b, _ := strconv.ParseBool(str)
+	fmt.Println(b)
 }
