@@ -25,6 +25,14 @@ func getSubAndPro(n1 int, n2 int) (sub int, pro int) {
 	return
 }
 
+// 可变形参
+func getAllSum(val ...int) (sum int) {
+	for i := 0; i < len(val); i++ {
+		sum += val[i]
+	}
+	return
+}
+
 func main() {
 	// 函数也是一种数据类型，变量可以赋值为函数
 	a := getSum
@@ -41,4 +49,7 @@ func main() {
 	// 函数对返回值命名
 	sub, pro := getSubAndPro(30, 10)
 	fmt.Println("函数对返回值命名 sub =", sub, "pro =", pro)
+	// 可变形参
+	sum = getAllSum(10, 20, 50, 60, 34)
+	fmt.Println("可变形参 sum =", sum)
 }
