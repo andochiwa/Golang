@@ -10,7 +10,10 @@ func main() {
 	// 切片是数组的引用，因为传递时为引用传递
 	arr := [...]int{3, 4, 5}
 	// 声明一个切片，让切片引用数组的[1, 3)元素
-	slice := arr[1:3]
+	slice := arr[0:]
+	slice = arr[:3]
+	slice = arr[:]
+	slice = arr[1:3]
 	fmt.Println("1 arr =", arr)
 	fmt.Println("1 slice =", slice)
 	fmt.Println("1 slice元素个数 =", len(slice))
@@ -31,4 +34,13 @@ func main() {
 	fmt.Println("3 slice的容量 =", cap(slice))
 	changeSlice(slice)
 	fmt.Println("3 change slice =", slice)
+
+	// 插入元素
+	slice = append(slice, 4, 5, 6)
+	fmt.Println("4 slice =", slice)
+
+	// 切片拷贝
+	slice2 := make([]int, 10)
+	copy(slice2, slice)
+	fmt.Println("5 slice2 =", slice2)
 }
