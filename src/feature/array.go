@@ -11,5 +11,7 @@ func main() {
 	fmt.Println(arr2)
 
 	var names = [...]string{1: "tom", 2: "jack", 0: "marry"}
-	fmt.Println(names)
+	for i, name := range names {
+		fmt.Println(i, name)
+	}
 }
