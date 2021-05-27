@@ -2,11 +2,11 @@ package main
 
 import "fmt"
 
-// 定义一个Person结构体
+// 定义一个Person结构体，后面tag代表序列化为json后字段的名字，原理是反射
 
 type Person struct {
-	Name string
-	Age  int
+	Name string `json:"name"`
+	Age  int    `json:"age"`
 }
 
 func main() {
