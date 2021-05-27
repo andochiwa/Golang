@@ -9,9 +9,15 @@ type Person struct {
 	Age  int    `json:"age"`
 }
 
-// 给Person绑定方法
+// 给Person绑定方法，这里是值类型，引用可以使用指针
 func (person Person) test() {
 	fmt.Println("Person method", person)
+}
+
+// 如果实现String()方法，则相当于toString(), 只对指针类型有效
+func (person Person) String() (str string) {
+	str = fmt.Sprintf("Name = %v, Age = %v", person.Name, person.Age)
+	return
 }
 
 func main() {
