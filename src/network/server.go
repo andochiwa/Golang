@@ -29,7 +29,7 @@ func main() {
 			fmt.Println("Accept error", err)
 			continue
 		}
-		fmt.Println("Accept success", accept)
+		fmt.Printf("Accept success con = %v, ip = %v\n", accept, accept.RemoteAddr().String())
 
 	}
 	//fmt.Println("listen success", listen)
