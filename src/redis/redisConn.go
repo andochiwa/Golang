@@ -6,13 +6,19 @@ import (
 )
 
 func main() {
-	c, err := redis.Dial("tcp", "localhost:6379")
+	conn, err := redis.Dial("tcp", "localhost:6379")
 	if err != nil {
 		fmt.Println("conn redis failed,", err)
 		return
 	}
+	defer conn.Close()
 
 	fmt.Println("redis conn success")
 
-	defer c.Close()
+	// 插入一条数据
+	_, err = conn.Do("set", "name", "tom")
+	if err != nil {
+		fmt.Println("set error,", err)
+		return
+	}
 }
