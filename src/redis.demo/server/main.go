@@ -6,7 +6,18 @@ import (
 )
 
 func process(conn net.Conn) {
+	defer conn.Close()
 	// 读取客户端发送的信息
+	for {
+		buf := make([]byte, 4096)
+		fmt.Println("等待客户端发送数据")
+		_, err := conn.Read(buf)
+		if err != nil {
+			fmt.Println("conn.Read error =", err)
+			return
+		}
+		fmt.Println("读取到的数据 =", buf[:4])
+	}
 }
 
 func main() {

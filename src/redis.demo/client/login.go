@@ -38,6 +38,8 @@ func login(id int, password string) error {
 	if err != nil {
 		return err
 	}
+
+	// 先发送消息的长度
 	// 转成byte
 	pkgLen := uint32(len(data))
 	// 因为uint32是4字节，所以只需要开4字节的byte

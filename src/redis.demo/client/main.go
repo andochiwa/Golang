@@ -54,9 +54,10 @@ func main() {
 
 			err = login(id, password)
 			if err != nil {
-				fmt.Println("用户名或密码有误，请重新输入")
+				fmt.Println("发生了错误 =", err)
 				continue
 			}
+			break
 		}
 	case 2:
 		fmt.Println("注册用户")
