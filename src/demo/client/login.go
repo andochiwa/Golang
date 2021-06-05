@@ -6,6 +6,7 @@ import (
 	"errors"
 	"net"
 	"redis.demo/common/message"
+	"time"
 )
 
 // 登录函数
@@ -45,7 +46,7 @@ func login(id int, password string) error {
 	// 因为uint32是4字节，所以只需要开4字节的byte
 	var bytes [4]byte
 	binary.BigEndian.PutUint32(bytes[:], pkgLen)
-	// 发送数据
+	// 发送长度
 	n, err := conn.Write(bytes[:])
 	if err != nil {
 		return err
@@ -53,5 +54,12 @@ func login(id int, password string) error {
 		return errors.New("conn.Write send byte error")
 	}
 
+	// 发送消息
+	_, err = conn.Write(data)
+	if err != nil {
+		return err
+	}
+
+	time.Sleep(time.Second * 20)
 	return nil
 }

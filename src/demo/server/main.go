@@ -1,22 +1,52 @@
 package main
 
 import (
+	"encoding/binary"
+	"encoding/json"
 	"fmt"
+	"io"
 	"net"
+	"redis.demo/common/message"
 )
+
+func readPkg(conn net.Conn) (mes message.Message, err error) {
+	buf := make([]byte, 4096)
+	fmt.Println("等待客户端发送数据")
+	_, err = conn.Read(buf[:4])
+	if err != nil {
+		fmt.Println("conn.Read error =", err)
+		return
+	}
+	// 根据buf[:4] 转成一个uint32类型
+	pkgLen := binary.BigEndian.Uint32(buf[:4])
+
+	// 根据pkgLen读取消息内容
+	n, err := conn.Read(buf[:pkgLen])
+	if err != nil || n != int(pkgLen) {
+		return
+	}
+	// 把pkgLen反序列化成message.Message类型
+	err = json.Unmarshal(buf[:pkgLen], &mes)
+	if err != nil {
+		return
+	}
+	return
+}
 
 func process(conn net.Conn) {
 	defer conn.Close()
 	// 读取客户端发送的信息
-	buf := make([]byte, 4096)
 	for {
-		fmt.Println("等待客户端发送数据")
-		_, err := conn.Read(buf)
+		mes, err := readPkg(conn)
 		if err != nil {
-			fmt.Println("conn.Read error =", err)
+			if err == io.EOF {
+				fmt.Println("对方关闭了连接，服务正常退出")
+				return
+			}
+			fmt.Println("readPkg err =", err)
 			return
 		}
-		fmt.Println("读取到的数据 =", buf[:4])
+		fmt.Println("mes =", mes)
 	}
 }
 
