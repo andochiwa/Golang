@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/binary"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"net"
@@ -14,7 +15,6 @@ func readPkg(conn net.Conn) (mes message.Message, err error) {
 	fmt.Println("等待客户端发送数据")
 	_, err = conn.Read(buf[:4])
 	if err != nil {
-		fmt.Println("conn.Read error =", err)
 		return
 	}
 	// 根据buf[:4] 转成一个uint32类型
@@ -33,6 +33,7 @@ func readPkg(conn net.Conn) (mes message.Message, err error) {
 	return
 }
 
+// 获取并处理消息
 func process(conn net.Conn) {
 	defer conn.Close()
 	// 读取客户端发送的信息
@@ -48,6 +49,24 @@ func process(conn net.Conn) {
 		}
 		fmt.Println("mes =", mes)
 	}
+}
+
+// 根据消息种类分发函数
+func serverProssMessage(conn net.Conn, mes *message.Message) (err error) {
+	switch mes.Type {
+	case message.LoginMessageType:
+		// 处理登录
+		err := ServerProcessLogin(conn, mes)
+		if err != nil {
+			return err
+		}
+	case message.RegisterMessageType:
+		// 处理注册
+	default:
+		err = errors.New("消息类型不存在，无法处理")
+		return
+	}
+	return
 }
 
 func main() {

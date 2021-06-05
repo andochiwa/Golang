@@ -16,11 +16,18 @@ type (
 		Code  int    `json:"code"`  // 返回状态码 200成功 444未注册
 		Error string `json:"error"` // 返回错误信息
 	}
+
+	RegisterMessage struct {
+		UserId   int
+		UserPwd  string
+		UserName string
+	}
 )
 
 // 定义一些消息类型
 
 const (
-	LoginMessageType = "LoginMessage"
-	LoginResultType  = "LoginResultType"
+	LoginMessageType    = "LoginMessage"
+	LoginResultType     = "LoginResultType"
+	RegisterMessageType = "RegisterMessageType"
 )

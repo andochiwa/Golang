@@ -60,6 +60,6 @@ func login(id int, password string) error {
 		return err
 	}
 
-	time.Sleep(time.Second * 20)
+	time.Sleep(time.Second * 10)
 	return nil
 }
