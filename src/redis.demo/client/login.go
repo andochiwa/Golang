@@ -1,7 +1,9 @@
 package main
 
 import (
+	"encoding/binary"
 	"encoding/json"
+	"errors"
 	"net"
 	"redis.demo/common/message"
 )
@@ -13,6 +15,7 @@ func login(id int, password string) error {
 	if err != nil {
 		return err
 	}
+	defer conn.Close()
 
 	// 发送消息给服务器
 	msg := message.Message{}
@@ -27,7 +30,26 @@ func login(id int, password string) error {
 	if err != nil {
 		return err
 	}
-	// 将序列化好的消息转给msg
+	// 将序列化好的消息给msg
 	msg.Data = string(data)
 
+	// 将msg序列化，然后发送给服务器
+	data, err = json.Marshal(msg)
+	if err != nil {
+		return err
+	}
+	// 转成byte
+	pkgLen := uint32(len(data))
+	// 因为uint32是4字节，所以只需要开4字节的byte
+	var bytes [4]byte
+	binary.BigEndian.PutUint32(bytes[:], pkgLen)
+	// 发送数据
+	n, err := conn.Write(bytes[:])
+	if err != nil {
+		return err
+	} else if n != 4 {
+		return errors.New("conn.Write send byte error")
+	}
+
+	return nil
 }
