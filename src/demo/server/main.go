@@ -8,8 +8,8 @@ import (
 func process(conn net.Conn) {
 	defer conn.Close()
 	// 读取客户端发送的信息
+	buf := make([]byte, 4096)
 	for {
-		buf := make([]byte, 4096)
 		fmt.Println("等待客户端发送数据")
 		_, err := conn.Read(buf)
 		if err != nil {
