@@ -1,12 +1,11 @@
 package main
 
 import (
-	"encoding/binary"
 	"encoding/json"
-	"errors"
+	"fmt"
 	"net"
 	"redis.demo/common/message"
-	"time"
+	"redis.demo/common/utils"
 )
 
 // 登录函数
@@ -40,26 +39,28 @@ func login(id int, password string) error {
 		return err
 	}
 
-	// 先发送消息的长度
-	// 转成byte
-	pkgLen := uint32(len(data))
-	// 因为uint32是4字节，所以只需要开4字节的byte
-	var bytes [4]byte
-	binary.BigEndian.PutUint32(bytes[:], pkgLen)
-	// 发送长度
-	n, err := conn.Write(bytes[:])
-	if err != nil {
-		return err
-	} else if n != 4 {
-		return errors.New("conn.Write send byte error")
-	}
-
-	// 发送消息
-	_, err = conn.Write(data)
+	// 发送数据
+	err = utils.WritePkg(conn, data)
 	if err != nil {
 		return err
 	}
 
-	time.Sleep(time.Second * 10)
+	// 获取数据
+	msg, err = utils.ReadPkg(conn)
+	if err != nil {
+		return err
+	}
+	// 将msg的data部分反序列化
+	var loginResult message.LoginResult
+	err = json.Unmarshal([]byte(msg.Data), &loginResult)
+	if err != nil {
+		return err
+	}
+	if loginResult.Code == 200 {
+		fmt.Println("登录成功")
+	} else {
+		fmt.Println(loginResult.Error)
+	}
+
 	return nil
 }

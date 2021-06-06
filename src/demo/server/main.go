@@ -1,44 +1,20 @@
 package main
 
 import (
-	"encoding/binary"
-	"encoding/json"
 	"errors"
 	"fmt"
 	"io"
 	"net"
 	"redis.demo/common/message"
+	"redis.demo/common/utils"
 )
-
-func readPkg(conn net.Conn) (mes message.Message, err error) {
-	buf := make([]byte, 4096)
-	fmt.Println("等待客户端发送数据")
-	_, err = conn.Read(buf[:4])
-	if err != nil {
-		return
-	}
-	// 根据buf[:4] 转成一个uint32类型
-	pkgLen := binary.BigEndian.Uint32(buf[:4])
-
-	// 根据pkgLen读取消息内容
-	n, err := conn.Read(buf[:pkgLen])
-	if err != nil || n != int(pkgLen) {
-		return
-	}
-	// 把pkgLen反序列化成message.Message类型
-	err = json.Unmarshal(buf[:pkgLen], &mes)
-	if err != nil {
-		return
-	}
-	return
-}
 
 // 获取并处理消息
 func process(conn net.Conn) {
 	defer conn.Close()
 	// 读取客户端发送的信息
 	for {
-		mes, err := readPkg(conn)
+		mes, err := utils.ReadPkg(conn)
 		if err != nil {
 			if err == io.EOF {
 				fmt.Println("对方关闭了连接，服务正常退出")
@@ -47,7 +23,11 @@ func process(conn net.Conn) {
 			fmt.Println("readPkg err =", err)
 			return
 		}
-		fmt.Println("mes =", mes)
+		err = serverProssMessage(conn, &mes)
+		if err != nil {
+			fmt.Println("serverProcessMessage err =", err)
+			return
+		}
 	}
 }
 
@@ -61,7 +41,7 @@ func serverProssMessage(conn net.Conn, mes *message.Message) (err error) {
 			return err
 		}
 	case message.RegisterMessageType:
-		// 处理注册
+		// todo 处理注册
 	default:
 		err = errors.New("消息类型不存在，无法处理")
 		return

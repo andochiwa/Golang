@@ -1,11 +1,11 @@
 package main
 
 import (
-	"encoding/binary"
 	"encoding/json"
-	"errors"
+	"fmt"
 	"net"
 	"redis.demo/common/message"
+	"redis.demo/common/utils"
 )
 
 // ServerProcessLogin 处理登录流程
@@ -22,6 +22,7 @@ func ServerProcessLogin(conn net.Conn, mes *message.Message) (err error) {
 	var loginResult message.LoginResult
 
 	// 如果id为100，密码为abc就认为合法
+	fmt.Println("message =", loginMessage)
 	if loginMessage.UserId == 100 && loginMessage.UserPwd == "abc" {
 		loginResult.Code = 200
 	} else {
@@ -41,28 +42,6 @@ func ServerProcessLogin(conn net.Conn, mes *message.Message) (err error) {
 		return
 	}
 	// 发送消息
-	err = writePkg(conn, data)
-	return
-}
-
-func writePkg(conn net.Conn, data []byte) (err error) {
-	pkgLen := uint32(len(data))
-
-	var bytes [4]byte
-	binary.BigEndian.PutUint32(bytes[:], pkgLen)
-	// 发送长度
-	n, err := conn.Write(bytes[:])
-	if err != nil {
-		return
-	} else if n != 4 {
-		err = errors.New("conn.Write send byte error")
-		return
-	}
-
-	// 发送消息
-	_, err = conn.Write(data)
-	if err != nil {
-		return
-	}
+	err = utils.WritePkg(conn, data)
 	return
 }
