@@ -18,9 +18,9 @@ type (
 	}
 
 	RegisterMessage struct {
-		UserId   int
-		UserPwd  string
-		UserName string
+		UserId   int    `json:"user_id,omitempty"`
+		UserPwd  string `json:"user_pwd,omitempty"`
+		UserName string `json:"user_name,omitempty"`
 	}
 )
 
