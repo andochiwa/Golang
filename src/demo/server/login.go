@@ -21,13 +21,17 @@ func ServerProcessLogin(conn net.Conn, mes *message.Message) (err error) {
 	resultMessage.Type = message.LoginResultType
 	var loginResult message.LoginResult
 
-	// 如果id为100，密码为abc就认为合法
-	fmt.Println("message =", loginMessage)
-	if loginMessage.UserId == 100 && loginMessage.UserPwd == "abc" {
-		loginResult.Code = 200
+	user, err := MyUserDao.Login(loginMessage.UserId, loginMessage.UserPwd)
+	if err != nil {
+		if err == ErrorUserNotexists {
+			loginResult.Code = 444
+		} else if err == ErrorUserPwd {
+			loginResult.Code = 403
+		}
+		loginResult.Error = err.Error()
 	} else {
-		loginResult.Code = 444
-		loginResult.Error = "User not exist"
+		loginResult.Code = 200
+		fmt.Println(user, "登录成功")
 	}
 
 	// 把loginResult序列化

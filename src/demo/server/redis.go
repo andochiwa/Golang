@@ -2,10 +2,10 @@ package main
 
 import "github.com/gomodule/redigo/redis"
 
-var pool *redis.Pool
+var RedisPool *redis.Pool
 
 func initPool(address string) {
-	pool = &redis.Pool{
+	RedisPool = &redis.Pool{
 		MaxActive:   0,
 		MaxIdle:     8,
 		IdleTimeout: 100,

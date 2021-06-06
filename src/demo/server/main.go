@@ -8,6 +8,7 @@ import (
 func init() {
 	address := "localhost:6379"
 	initPool(address)
+	initUserDao()
 }
 
 func main() {
