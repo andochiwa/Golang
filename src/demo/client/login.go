@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net"
+	"os"
 	"redis.demo/common/message"
 	"redis.demo/common/utils"
 )
@@ -57,10 +58,42 @@ func login(id int, password string) error {
 		return err
 	}
 	if loginResult.Code == 200 {
-		fmt.Println("登录成功")
+		for {
+			fmt.Println("登陆成功！")
+			// 启动协程读取消息
+			go processServerMessage(conn)
+			for {
+				showMenu()
+			}
+		}
 	} else {
 		fmt.Println(loginResult.Error)
 	}
 
 	return nil
+}
+
+func showMenu() {
+	fmt.Println("\t\t1. 显示在线用户列表")
+	fmt.Println("\t\t2. 发送消息")
+	fmt.Println("\t\t3. 消息列表")
+	fmt.Println("\t\t4. 退出系统")
+	fmt.Println("\t\t请选择(1-4):")
+	key := 0
+	for !(key >= 1 && key <= 4) {
+		_, err := fmt.Scanf("%d\n", &key)
+		if err != nil {
+			fmt.Println("输入有误，请重新输入")
+		}
+	}
+	switch key {
+	case 1:
+		// todo
+	case 2:
+	case 3:
+	case 4:
+		os.Exit(0)
+	default:
+
+	}
 }

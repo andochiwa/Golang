@@ -11,7 +11,7 @@ import (
 
 func ReadPkg(conn net.Conn) (mes message.Message, err error) {
 	buf := make([]byte, 4096)
-	fmt.Println("等待读取对方发送的数据")
+	fmt.Println("等待读取对方发送的消息")
 	_, err = conn.Read(buf[:4])
 	if err != nil {
 		return
