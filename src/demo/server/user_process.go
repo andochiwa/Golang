@@ -23,7 +23,7 @@ func ServerProcessLogin(conn net.Conn, mes *message.Message) (err error) {
 
 	user, err := MyUserDao.Login(loginMessage.UserId, loginMessage.UserPwd)
 	if err != nil {
-		if err == ErrorUserNotexists {
+		if err == ErrorUserNotExists {
 			loginResult.Code = 444
 		} else if err == ErrorUserPwd {
 			loginResult.Code = 403
@@ -48,4 +48,42 @@ func ServerProcessLogin(conn net.Conn, mes *message.Message) (err error) {
 	// 发送消息
 	err = utils.WritePkg(conn, data)
 	return
+}
+
+func ServerProcessRegister(conn net.Conn, mes *message.Message) error {
+	// 取出message.data
+	var user User
+	var registerResult message.RegisterResult
+	err := json.Unmarshal([]byte(mes.Data), &user)
+	if err != nil {
+		return err
+	}
+	err = MyUserDao.Register(&user)
+	if err != nil {
+		if err == ErrorUserExists {
+			registerResult.Code = 444
+		} else {
+			registerResult.Code = 403
+		}
+		registerResult.Error = err.Error()
+	} else {
+		registerResult.Code = 200
+		fmt.Println("注册成功")
+	}
+	// 把结果发送给客户端
+	registerResultData, err := json.Marshal(registerResult)
+	if err != nil {
+		return err
+	}
+	resultMessage := message.Message{Type: message.RegisterResultType, Data: string(registerResultData)}
+	resultMessageData, err := json.Marshal(resultMessage)
+	if err != nil {
+		return err
+	}
+	err = utils.WritePkg(conn, resultMessageData)
+	if err != nil {
+		return err
+	}
+	return nil
+
 }

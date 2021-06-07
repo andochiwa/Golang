@@ -41,7 +41,10 @@ func serverProssMessage(conn net.Conn, mes *message.Message) (err error) {
 			return err
 		}
 	case message.RegisterMessageType:
-		// todo 处理注册
+		err := ServerProcessRegister(conn, mes)
+		if err != nil {
+			return err
+		}
 	default:
 		err = errors.New("消息类型不存在，无法处理")
 		return

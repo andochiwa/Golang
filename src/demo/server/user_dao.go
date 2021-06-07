@@ -34,7 +34,7 @@ func (this *UserDao) getUserById(conn redis.Conn, id int) (User, error) {
 	res, err := redis.String(conn.Do("HGet", "users", id))
 	if err != nil {
 		if err == redis.ErrNil {
-			err = ErrorUserNotexists
+			err = ErrorUserNotExists
 		}
 		return User{}, err
 	}
@@ -61,4 +61,36 @@ func (this *UserDao) Login(id int, password string) (User, error) {
 		return User{}, ErrorUserPwd
 	}
 	return user, nil
+}
+
+// Register 注册校验
+func (this *UserDao) Register(user *User) error {
+	conn := this.RedisPool.Get()
+	defer conn.Close()
+	_, err := this.getUserById(conn, user.UserId)
+	// 用户已存在或者有未知错误
+	if err == nil || err != ErrorUserNotExists {
+		if err == nil {
+			err = ErrorUserExists
+		}
+		return err
+	}
+	// 存入redis
+	err = this.InsertById(conn, user)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (this *UserDao) InsertById(conn redis.Conn, user *User) error {
+	userData, err := json.Marshal(user)
+	if err != nil {
+		return err
+	}
+	_, err = conn.Do("HSet", "users", user.UserId, string(userData))
+	if err != nil {
+		return err
+	}
+	return nil
 }
