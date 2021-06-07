@@ -44,8 +44,8 @@ type (
 	}
 
 	User struct {
-		UserId   int    `json:"user_id,omitempty"` // 用户id
-		UserName string `json:"user_name,omitempty"`
-		Status   int    `json:"status,omitempty"` // 用户状态
+		UserId   int    `json:"user_id,omitempty"`   // 用户id
+		UserName string `json:"user_name,omitempty"` // 用户名
+		Status   int    `json:"status,omitempty"`    // 用户状态
 	}
 )

@@ -142,7 +142,7 @@ func showMenu() {
 	}
 	switch key {
 	case 1:
-		// todo
+		showOnlineUser()
 	case 2:
 	case 3:
 	case 4:

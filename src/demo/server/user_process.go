@@ -105,9 +105,9 @@ func NotifyUsers(userId int, userName string, status int) {
 			continue
 		}
 		// 通知其他用户
-		notifyUserStatus := message.User{UserId: id, UserName: userName, Status: status}
-		notifyData, _ := json.Marshal(notifyUserStatus)
-		msg := message.Message{Type: message.NotifyUserStatusType, Data: string(notifyData)}
+		user := message.User{UserId: id, UserName: userName, Status: status}
+		userData, _ := json.Marshal(user)
+		msg := message.Message{Type: message.NotifyUserStatusType, Data: string(userData)}
 		msgData, _ := json.Marshal(msg)
 		err := utils.WritePkg(conn, msgData)
 		if err != nil {

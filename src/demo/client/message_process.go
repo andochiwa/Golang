@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"net"
 	"redis.demo/common/message"
@@ -18,6 +19,20 @@ func processServerMessage(conn net.Conn) {
 		switch msg.Type {
 		case message.NotifyUserStatusType:
 			// 有人上线或离线了
+			var user message.User
+			err := json.Unmarshal([]byte(msg.Data), &user)
+			if err != nil {
+				fmt.Println("processServerMessage json.Unmarshal err =", err)
+			} else {
+				switch user.Status {
+				case message.UserOnline:
+					InsertUser(user)
+				case message.UserOffline:
+					deleteUser(user.UserId)
+				default:
+					fmt.Println("can not resolve user")
+				}
+			}
 		default:
 			fmt.Println("收到消息 =", msg.Data)
 		}
