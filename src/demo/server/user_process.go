@@ -9,7 +9,7 @@ import (
 )
 
 // ServerProcessLogin 处理登录流程
-func ServerProcessLogin(conn net.Conn, mes *message.Message) (id int, name string, err error) {
+func ServerProcessLogin(conn net.Conn, mes *message.Message) (user User, err error) {
 	// 取出mes.data 并反序列化
 	var loginMessage message.LoginMessage
 	err = json.Unmarshal([]byte(mes.Data), &loginMessage)
@@ -21,7 +21,7 @@ func ServerProcessLogin(conn net.Conn, mes *message.Message) (id int, name strin
 	resultMessage.Type = message.LoginResultType
 	var loginResult message.LoginResult
 
-	user, err := MyUserDao.Login(loginMessage.UserId, loginMessage.UserPwd)
+	user, err = MyUserDao.Login(loginMessage.UserId, loginMessage.UserPwd)
 	if err != nil {
 		if err == ErrorUserNotExists {
 			loginResult.Code = 444
@@ -33,14 +33,15 @@ func ServerProcessLogin(conn net.Conn, mes *message.Message) (id int, name strin
 		loginResult.Code = 200
 		fmt.Println(user, "登录成功")
 		// 用户登录成功，把登录用户信息放入map中
-		userManager.AddOnlineUser(user.UserId, conn)
+		userManager.AddOnlineUser(user, conn)
 		// 通知其他用户
-		id = user.UserId
-		name = user.UserName
-		NotifyUsers(id, name, message.UserOnline)
-		for id := range userManager.GetAllOnlineUser() {
-			onlineUser := message.User{UserId: id, UserName: name, Status: message.UserOnline}
-			loginResult.Users = append(loginResult.Users, onlineUser)
+		NotifyUsers(user.UserId, user.UserName, message.UserOnline)
+		for onlineUser := range userManager.GetAllOnlineUser() {
+			loginResult.Users = append(loginResult.Users,
+				message.User{
+					UserId:   onlineUser.UserId,
+					UserName: onlineUser.UserName,
+					Status:   message.UserOnline})
 		}
 	}
 
@@ -100,12 +101,12 @@ func ServerProcessRegister(conn net.Conn, mes *message.Message) error {
 
 // NotifyUsers 通知其他user
 func NotifyUsers(userId int, userName string, status int) {
-	for id, conn := range userManager.GetAllOnlineUser() {
-		if id == userId {
+	for onlineUser, conn := range userManager.GetAllOnlineUser() {
+		if onlineUser.UserId == userId {
 			continue
 		}
 		// 通知其他用户
-		user := message.User{UserId: id, UserName: userName, Status: status}
+		user := message.User{UserId: userId, UserName: userName, Status: status}
 		userData, _ := json.Marshal(user)
 		msg := message.Message{Type: message.NotifyUserStatusType, Data: string(userData)}
 		msgData, _ := json.Marshal(msg)

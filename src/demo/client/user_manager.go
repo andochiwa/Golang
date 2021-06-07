@@ -21,6 +21,6 @@ func deleteUser(userId int) {
 func showOnlineUser() {
 	fmt.Println("Online user list:")
 	for _, v := range OnlineUsers {
-		fmt.Printf("id: %d, name: %s", v.UserId, v.UserName)
+		fmt.Printf("id: %d, name: %s\n", v.UserId, v.UserName)
 	}
 }

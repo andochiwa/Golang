@@ -8,32 +8,32 @@ import (
 var userManager *UserManager
 
 type UserManager struct {
-	OnlineUsers map[int]net.Conn
+	OnlineUsers map[User]net.Conn
 }
 
 func init() {
-	userManager = &UserManager{OnlineUsers: make(map[int]net.Conn)}
+	userManager = &UserManager{OnlineUsers: make(map[User]net.Conn)}
 }
 
 // AddOnlineUser 用户上线
-func (this *UserManager) AddOnlineUser(userId int, conn net.Conn) {
-	this.OnlineUsers[userId] = conn
+func (this *UserManager) AddOnlineUser(user User, conn net.Conn) {
+	this.OnlineUsers[user] = conn
 }
 
 // DeleteOnlineUser 用户下线
-func (this *UserManager) DeleteOnlineUser(userId int) {
-	delete(this.OnlineUsers, userId)
+func (this *UserManager) DeleteOnlineUser(user User) {
+	delete(this.OnlineUsers, user)
 }
 
-func (this *UserManager) GetOnlineUser(userId int) (net.Conn, error) {
-	user, ok := this.OnlineUsers[userId]
+func (this *UserManager) GetOnlineUser(user User) (net.Conn, error) {
+	conn, ok := this.OnlineUsers[user]
 	if ok == false {
-		return nil, fmt.Errorf("user %d not exists or is not online\n", userId)
+		return nil, fmt.Errorf("user %s not exists or is not online\n", user.UserName)
 	}
-	return user, nil
+	return conn, nil
 }
 
 // GetAllOnlineUser 获取所有在线用户
-func (this *UserManager) GetAllOnlineUser() map[int]net.Conn {
+func (this *UserManager) GetAllOnlineUser() map[User]net.Conn {
 	return this.OnlineUsers
 }

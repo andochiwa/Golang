@@ -56,7 +56,7 @@ func (this *UserDao) Login(id int, password string) (User, error) {
 	if err != nil {
 		return User{}, err
 	}
-	_, err = userManager.GetOnlineUser(user.UserId)
+	_, err = userManager.GetOnlineUser(user)
 	if err == nil {
 		return User{}, fmt.Errorf("user %d already login", id)
 	}
