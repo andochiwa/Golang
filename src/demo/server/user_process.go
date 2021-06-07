@@ -32,6 +32,11 @@ func ServerProcessLogin(conn net.Conn, mes *message.Message) (err error) {
 	} else {
 		loginResult.Code = 200
 		fmt.Println(user, "登录成功")
+		// 用户登录成功，把登录用户信息放入map中
+		userManager.AddOnlineUser(user.UserId, conn)
+		for id := range userManager.GetAllOnlineUser() {
+			loginResult.Users = append(loginResult.Users, id)
+		}
 	}
 
 	// 把loginResult序列化

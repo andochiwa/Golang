@@ -21,8 +21,9 @@ type (
 	}
 
 	LoginResult struct {
-		Code  int    `json:"code"`  // 返回状态码 200成功 444未注册
-		Error string `json:"error"` // 返回错误信息
+		Code  int    `json:"code"`            // 返回状态码 200成功 444未注册
+		Error string `json:"error"`           // 返回错误信息
+		Users []int  `json:"users,omitempty"` // 存放所有在线用户信息
 	}
 
 	RegisterMessage struct {
@@ -32,7 +33,7 @@ type (
 	}
 
 	RegisterResult struct {
-		Code  int    `json:"code"`  // 返回状态码 200成功 444已被注册
-		Error string `json:"error"` // 返回错误信息
+		Code  int    `json:"code,omitempty"`  // 返回状态码 200成功 444已被注册
+		Error string `json:"error,omitempty"` // 返回错误信息
 	}
 )

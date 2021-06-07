@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
 	"github.com/gomodule/redigo/redis"
 )
 
@@ -54,6 +55,10 @@ func (this *UserDao) Login(id int, password string) (User, error) {
 	user, err := this.getUserById(conn, id)
 	if err != nil {
 		return User{}, err
+	}
+	_, err = userManager.GetOnlineUser(user.UserId)
+	if err == nil {
+		return User{}, fmt.Errorf("user %d already login", id)
 	}
 
 	// 校验密码
