@@ -29,7 +29,7 @@ type (
 	LoginResult struct {
 		Code  int    `json:"code"`            // 返回状态码 200成功 444未注册
 		Error string `json:"error"`           // 返回错误信息
-		Users []int  `json:"users,omitempty"` // 存放所有在线用户信息
+		Users []User `json:"users,omitempty"` // 存放所有在线用户信息
 	}
 
 	RegisterMessage struct {
@@ -43,8 +43,9 @@ type (
 		Error string `json:"error,omitempty"` // 返回错误信息
 	}
 
-	NotifyUserStatus struct {
-		UserId int `json:"user_id,omitempty"` // 用户id
-		Status int `json:"status,omitempty"`  // 用户状态
+	User struct {
+		UserId   int    `json:"user_id,omitempty"` // 用户id
+		UserName string `json:"user_name,omitempty"`
+		Status   int    `json:"status,omitempty"` // 用户状态
 	}
 )

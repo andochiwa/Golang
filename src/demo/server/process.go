@@ -13,6 +13,7 @@ import (
 func process(conn net.Conn) {
 	defer conn.Close()
 	var userId int
+	var userName string
 	// 读取客户端发送的信息
 	for {
 		mes, err := utils.ReadPkg(conn)
@@ -20,13 +21,13 @@ func process(conn net.Conn) {
 			if err == io.EOF {
 				fmt.Println("对方关闭了连接，服务正常退出")
 				userManager.DeleteOnlineUser(userId)
-				NotifyUsers(userId, message.UserOffline)
+				NotifyUsers(userId, userName, message.UserOffline)
 				return
 			}
 			fmt.Println("readPkg err =", err)
 			return
 		}
-		userId, err = serverProssMessage(conn, &mes)
+		userId, userName, err = serverProssMessage(conn, &mes)
 		if err != nil {
 			fmt.Println("serverProcessMessage err =", err)
 			return
@@ -35,11 +36,11 @@ func process(conn net.Conn) {
 }
 
 // 根据消息种类分发函数
-func serverProssMessage(conn net.Conn, mes *message.Message) (userId int, err error) {
+func serverProssMessage(conn net.Conn, mes *message.Message) (userId int, name string, err error) {
 	switch mes.Type {
 	case message.LoginMessageType:
 		// 处理登录
-		userId, err = ServerProcessLogin(conn, mes)
+		userId, name, err = ServerProcessLogin(conn, mes)
 		if err != nil {
 			return
 		}

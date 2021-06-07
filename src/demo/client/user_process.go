@@ -60,11 +60,14 @@ func login(id int, password string) error {
 	}
 	if loginResult.Code == 200 {
 		for {
-			fmt.Println("登陆成功！")
+			fmt.Println("登录成功！")
+			// 初始化用户在线列表
+			for _, v := range loginResult.Users {
+				InsertUser(v)
+			}
 			// 启动协程读取消息
 			go processServerMessage(conn)
 			for {
-				// todo
 				showMenu()
 			}
 		}

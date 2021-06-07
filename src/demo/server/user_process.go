@@ -9,7 +9,7 @@ import (
 )
 
 // ServerProcessLogin 处理登录流程
-func ServerProcessLogin(conn net.Conn, mes *message.Message) (id int, err error) {
+func ServerProcessLogin(conn net.Conn, mes *message.Message) (id int, name string, err error) {
 	// 取出mes.data 并反序列化
 	var loginMessage message.LoginMessage
 	err = json.Unmarshal([]byte(mes.Data), &loginMessage)
@@ -36,9 +36,11 @@ func ServerProcessLogin(conn net.Conn, mes *message.Message) (id int, err error)
 		userManager.AddOnlineUser(user.UserId, conn)
 		// 通知其他用户
 		id = user.UserId
-		NotifyUsers(id, message.UserOnline)
+		name = user.UserName
+		NotifyUsers(id, name, message.UserOnline)
 		for id := range userManager.GetAllOnlineUser() {
-			loginResult.Users = append(loginResult.Users, id)
+			onlineUser := message.User{UserId: id, UserName: name, Status: message.UserOnline}
+			loginResult.Users = append(loginResult.Users, onlineUser)
 		}
 	}
 
@@ -97,13 +99,13 @@ func ServerProcessRegister(conn net.Conn, mes *message.Message) error {
 }
 
 // NotifyUsers 通知其他user
-func NotifyUsers(userId int, status int) {
+func NotifyUsers(userId int, userName string, status int) {
 	for id, conn := range userManager.GetAllOnlineUser() {
 		if id == userId {
 			continue
 		}
 		// 通知其他用户
-		notifyUserStatus := message.NotifyUserStatus{UserId: id, Status: status}
+		notifyUserStatus := message.User{UserId: id, UserName: userName, Status: status}
 		notifyData, _ := json.Marshal(notifyUserStatus)
 		msg := message.Message{Type: message.NotifyUserStatusType, Data: string(notifyData)}
 		msgData, _ := json.Marshal(msg)
