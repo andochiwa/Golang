@@ -41,7 +41,7 @@ func main() {
 
 				err = login(id, password)
 				if err != nil {
-					fmt.Println("发生了错误 :", err)
+					fmt.Println("登录发生了错误 :", err)
 					continue
 				}
 				break
@@ -55,7 +55,7 @@ func main() {
 			}
 
 			fmt.Println("输入注册密码")
-			for _, err := fmt.Scanf("%d\n", &password); err != nil; {
+			for _, err := fmt.Scanf("%s\n", &password); err != nil; {
 				fmt.Println("输入格式有误 请重新输入")
 				fmt.Println("输入注册密码")
 			}
@@ -68,7 +68,7 @@ func main() {
 
 			err := register(id, password, name)
 			if err != nil {
-				fmt.Println("发生错误:", err)
+				fmt.Println("注册发生错误:", err)
 				continue
 			}
 		case 3:
