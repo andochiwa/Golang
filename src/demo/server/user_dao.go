@@ -2,7 +2,6 @@ package main
 
 import (
 	"encoding/json"
-	"fmt"
 	"github.com/gomodule/redigo/redis"
 )
 
@@ -33,7 +32,6 @@ func NewUserDao(redisPool *redis.Pool) *UserDao {
 // getUserById 通过id获取
 func (this *UserDao) getUserById(conn redis.Conn, id int) (User, error) {
 	res, err := redis.String(conn.Do("HGet", "users", id))
-	fmt.Println("res =", res, "err =", err)
 	if err != nil {
 		if err == redis.ErrNil {
 			err = ErrorUserNotexists

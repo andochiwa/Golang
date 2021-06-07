@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"net"
 	"os"
@@ -70,6 +71,55 @@ func login(id int, password string) error {
 		fmt.Println(loginResult.Error)
 	}
 
+	return nil
+}
+
+func register(id int, password string, name string) error {
+	// 连接到服务器
+	conn, err := net.Dial("tcp", "localhost:9876")
+	if err != nil {
+		return err
+	}
+	defer conn.Close()
+
+	registerMessage := message.RegisterMessage{UserId: id, UserPwd: password, UserName: name}
+	// 序列化账号密码等数据
+	data, err := json.Marshal(registerMessage)
+	if err != nil {
+		return err
+	}
+
+	msg := message.Message{Type: message.RegisterMessageType, Data: string(data)}
+
+	// 序列化发送的信息
+	msgData, err := json.Marshal(msg)
+	if err != nil {
+		return err
+	}
+
+	// 发送给服务器
+	err = utils.WritePkg(conn, msgData)
+	if err != nil {
+		return err
+	}
+
+	// 读取数据
+	msg, err = utils.ReadPkg(conn)
+	if err != nil {
+		return err
+	}
+	// 反序列化
+	var registerResult message.RegisterResult
+	err = json.Unmarshal([]byte(msg.Data), &registerResult)
+	if err != nil {
+		return err
+	}
+
+	if registerResult.Code == 200 {
+		fmt.Println("注册成功，可以重新登录")
+	} else {
+		return errors.New(registerResult.Error)
+	}
 	return nil
 }
 

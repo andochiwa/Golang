@@ -1,5 +1,13 @@
 package message
 
+// 定义一些消息类型
+const (
+	LoginMessageType    = "LoginMessage"
+	LoginResultType     = "LoginResultType"
+	RegisterMessageType = "RegisterMessageType"
+	RegisterResultType  = "RegisterResultType"
+)
+
 type (
 	Message struct {
 		Type string `json:"type"` // 消息类型
@@ -22,12 +30,9 @@ type (
 		UserPwd  string `json:"user_pwd,omitempty"`
 		UserName string `json:"user_name,omitempty"`
 	}
-)
 
-// 定义一些消息类型
-
-const (
-	LoginMessageType    = "LoginMessage"
-	LoginResultType     = "LoginResultType"
-	RegisterMessageType = "RegisterMessageType"
+	RegisterResult struct {
+		Code  int    `json:"code"`  // 返回状态码 200成功 444已被注册
+		Error string `json:"error"` // 返回错误信息
+	}
 )
