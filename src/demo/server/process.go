@@ -12,18 +12,21 @@ import (
 // 获取并处理消息
 func process(conn net.Conn) {
 	defer conn.Close()
+	var userId int
 	// 读取客户端发送的信息
 	for {
 		mes, err := utils.ReadPkg(conn)
 		if err != nil {
 			if err == io.EOF {
 				fmt.Println("对方关闭了连接，服务正常退出")
+				userManager.DeleteOnlineUser(userId)
+				NotifyUsers(userId, message.UserOffline)
 				return
 			}
 			fmt.Println("readPkg err =", err)
 			return
 		}
-		err = serverProssMessage(conn, &mes)
+		userId, err = serverProssMessage(conn, &mes)
 		if err != nil {
 			fmt.Println("serverProcessMessage err =", err)
 			return
@@ -32,18 +35,18 @@ func process(conn net.Conn) {
 }
 
 // 根据消息种类分发函数
-func serverProssMessage(conn net.Conn, mes *message.Message) (err error) {
+func serverProssMessage(conn net.Conn, mes *message.Message) (userId int, err error) {
 	switch mes.Type {
 	case message.LoginMessageType:
 		// 处理登录
-		err := ServerProcessLogin(conn, mes)
+		userId, err = ServerProcessLogin(conn, mes)
 		if err != nil {
-			return err
+			return
 		}
 	case message.RegisterMessageType:
 		err := ServerProcessRegister(conn, mes)
 		if err != nil {
-			return err
+			return
 		}
 	default:
 		err = errors.New("消息类型不存在，无法处理")

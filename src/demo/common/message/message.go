@@ -2,10 +2,16 @@ package message
 
 // 定义一些消息类型
 const (
-	LoginMessageType    = "LoginMessage"
-	LoginResultType     = "LoginResultType"
-	RegisterMessageType = "RegisterMessageType"
-	RegisterResultType  = "RegisterResultType"
+	LoginMessageType     = "LoginMessage"
+	LoginResultType      = "LoginResultType"
+	RegisterMessageType  = "RegisterMessageType"
+	RegisterResultType   = "RegisterResultType"
+	NotifyUserStatusType = "NotifyUserStatus"
+)
+
+const (
+	UserOnline = iota
+	UserOffline
 )
 
 type (
@@ -35,5 +41,10 @@ type (
 	RegisterResult struct {
 		Code  int    `json:"code,omitempty"`  // 返回状态码 200成功 444已被注册
 		Error string `json:"error,omitempty"` // 返回错误信息
+	}
+
+	NotifyUserStatus struct {
+		UserId int `json:"user_id,omitempty"` // 用户id
+		Status int `json:"status,omitempty"`  // 用户状态
 	}
 )

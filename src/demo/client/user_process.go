@@ -64,6 +64,7 @@ func login(id int, password string) error {
 			// 启动协程读取消息
 			go processServerMessage(conn)
 			for {
+				// todo
 				showMenu()
 			}
 		}
