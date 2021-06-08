@@ -31,7 +31,6 @@ func process(conn net.Conn) {
 		user, err = serverProssMessage(conn, &mes)
 		if err != nil {
 			fmt.Println("serverProcessMessage err =", err)
-			return
 		}
 	}
 }
@@ -46,11 +45,17 @@ func serverProssMessage(conn net.Conn, mes *message.Message) (user User, err err
 			return
 		}
 	case message.RegisterMessageType:
+		// 处理注册
 		err = ServerProcessRegister(conn, mes)
 		if err != nil {
 			return
 		}
-
+	case message.SmsMessageType:
+		// 处理用户发送消息
+		err = SendMessageToUsers(mes)
+		if err != nil {
+			return
+		}
 	default:
 		err = errors.New("消息类型不存在，无法处理")
 		return

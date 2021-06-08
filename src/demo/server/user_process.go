@@ -117,3 +117,29 @@ func NotifyUsers(userId int, userName string, status int) {
 		}
 	}
 }
+
+// SendMessageToUsers 发送消息给其他user
+func SendMessageToUsers(msg *message.Message) error {
+	msg.Type = message.SmsResultType
+	var smsMessage message.SmsMessage
+	err := json.Unmarshal([]byte(msg.Data), &smsMessage)
+	if err != nil {
+		return err
+	}
+
+	msgData, err := json.Marshal(msg)
+	if err != nil {
+		return err
+	}
+
+	for k, v := range userManager.OnlineUsers {
+		if k.UserId == smsMessage.UserId {
+			continue
+		}
+		err := utils.WritePkg(v, msgData)
+		if err != nil {
+			fmt.Printf("send message to user %s fail, err = %v\n", k.UserName, err)
+		}
+	}
+	return nil
+}

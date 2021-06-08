@@ -8,6 +8,7 @@ const (
 	RegisterResultType   = "RegisterResultType"
 	NotifyUserStatusType = "NotifyUserStatus"
 	SmsMessageType       = "SmsMessageType"
+	SmsResultType        = "SmsResultType"
 )
 
 const (
