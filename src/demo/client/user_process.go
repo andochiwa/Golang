@@ -152,7 +152,7 @@ func showMenu() {
 	case 2:
 		fmt.Println("输入你要发送的信息")
 		var content string
-		for _, err := fmt.Scanf("%s\n", &content); err != nil; {
+		for _, err := fmt.Scanf("%s\n", &content); err != nil; _, err = fmt.Scanf("%s\n", &content) {
 			fmt.Println("输入有误，请重新输入")
 			fmt.Println("输入你要发送的信息")
 		}

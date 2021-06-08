@@ -28,13 +28,13 @@ func main() {
 			fmt.Println("登录聊天室")
 			for {
 				fmt.Println("输入用户id")
-				for _, err := fmt.Scanf("%d\n", &id); err != nil; {
+				for _, err := fmt.Scanf("%d\n", &id); err != nil; _, err = fmt.Scanf("%d\n", &id) {
 					fmt.Println("输入格式有误 请重新输入")
 					fmt.Println("输入用户id")
 				}
 
 				fmt.Println("输入用户密码")
-				for _, err := fmt.Scanf("%s\n", &password); err != nil; {
+				for _, err := fmt.Scanf("%s\n", &password); err != nil; _, err = fmt.Scanf("%s\n", &password) {
 					fmt.Println("输入格式有误 请重新输入")
 					fmt.Println("输入用户密码")
 				}
@@ -49,19 +49,19 @@ func main() {
 		case 2:
 			fmt.Println("注册用户")
 			fmt.Println("输入注册id")
-			for _, err := fmt.Scanf("%d\n", &id); err != nil; {
+			for _, err := fmt.Scanf("%d\n", &id); err != nil; _, err = fmt.Scanf("%d\n", &id) {
 				fmt.Println("输入格式有误 请重新输入")
 				fmt.Println("输入注册id")
 			}
 
 			fmt.Println("输入注册密码")
-			for _, err := fmt.Scanf("%s\n", &password); err != nil; {
+			for _, err := fmt.Scanf("%s\n", &password); err != nil; _, err = fmt.Scanf("%s\n", &password) {
 				fmt.Println("输入格式有误 请重新输入")
 				fmt.Println("输入注册密码")
 			}
 
 			fmt.Println("输入用户名")
-			for _, err := fmt.Scanf("%s\n", &name); err != nil; {
+			for _, err := fmt.Scanf("%s\n", &name); err != nil; _, err = fmt.Scanf("%s\n", &name) {
 				fmt.Println("输入格式有误 请重新输入")
 				fmt.Println("输入用户名")
 			}
