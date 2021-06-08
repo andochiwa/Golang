@@ -20,15 +20,21 @@ func process(conn net.Conn) {
 			if err == io.EOF {
 				fmt.Println("对方关闭了连接，服务正常退出")
 				userManager.DeleteOnlineUser(user)
+				fmt.Println(user)
 				NotifyUsers(user.UserId, user.UserName, message.UserOffline)
 				return
 			}
 			userManager.DeleteOnlineUser(user)
+			fmt.Println(user)
 			NotifyUsers(user.UserId, user.UserName, message.UserOffline)
 			fmt.Println("readPkg err =", err)
 			return
 		}
-		user, err = serverProssMessage(conn, &mes)
+		if user == (User{}) {
+			user, err = serverProssMessage(conn, &mes)
+		} else {
+			_, err = serverProssMessage(conn, &mes)
+		}
 		if err != nil {
 			fmt.Println("serverProcessMessage err =", err)
 		}

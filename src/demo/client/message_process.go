@@ -33,6 +33,15 @@ func processServerMessage(conn net.Conn) {
 					fmt.Println("can not resolve user")
 				}
 			}
+		case message.SmsResultType:
+			// 收到消息
+			var smsMessage message.SmsMessage
+			err := json.Unmarshal([]byte(msg.Data), &smsMessage)
+			if err != nil {
+				fmt.Println("processServerMessage json.Unmarshal err =", err)
+				break
+			}
+			fmt.Printf("收到用户%s消息: %s\n", smsMessage.UserName, smsMessage.Content)
 		default:
 			fmt.Println("收到消息 =", msg.Data)
 		}
