@@ -7,6 +7,7 @@ const (
 	RegisterMessageType  = "RegisterMessageType"
 	RegisterResultType   = "RegisterResultType"
 	NotifyUserStatusType = "NotifyUserStatus"
+	SmsMessageType       = "SmsMessageType"
 )
 
 const (
@@ -47,5 +48,10 @@ type (
 		UserId   int    `json:"user_id,omitempty"`   // 用户id
 		UserName string `json:"user_name,omitempty"` // 用户名
 		Status   int    `json:"status,omitempty"`    // 用户状态
+	}
+
+	SmsMessage struct {
+		Content string        `json:"content,omitempty"` // 发送内容
+		User    `json:"user"` // 用户信息
 	}
 )

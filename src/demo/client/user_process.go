@@ -58,11 +58,17 @@ func login(id int, password string) error {
 	if err != nil {
 		return err
 	}
+
 	if loginResult.Code == 200 {
 		for {
 			fmt.Println("登录成功！")
 			// 初始化用户在线列表
 			for _, v := range loginResult.Users {
+				if v.UserId == id {
+					// 初始化个人信息
+					currentUser = CorrentUser{Conn: conn, User: v}
+					continue
+				}
 				InsertUser(v)
 			}
 			// 启动协程读取消息
@@ -144,6 +150,16 @@ func showMenu() {
 	case 1:
 		showOnlineUser()
 	case 2:
+		fmt.Println("输入你要发送的信息")
+		var content string
+		for _, err := fmt.Scanf("%s\n", &content); err != nil; {
+			fmt.Println("输入有误，请重新输入")
+			fmt.Println("输入你要发送的信息")
+		}
+		err := SendMessage(content)
+		if err != nil {
+			fmt.Println("SendMessage err =", err)
+		}
 	case 3:
 	case 4:
 		os.Exit(0)

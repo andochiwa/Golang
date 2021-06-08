@@ -50,6 +50,7 @@ func serverProssMessage(conn net.Conn, mes *message.Message) (user User, err err
 		if err != nil {
 			return
 		}
+
 	default:
 		err = errors.New("消息类型不存在，无法处理")
 		return

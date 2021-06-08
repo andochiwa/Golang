@@ -5,6 +5,7 @@ import (
 	"redis.demo/common/message"
 )
 
+var currentUser CorrentUser
 var OnlineUsers = make(map[int]message.User)
 
 // InsertUser 添加在线用户
